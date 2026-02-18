@@ -4,8 +4,6 @@
 # This script modifies .desktop files to add --no-sandbox flag for Chrome/Chromium
 # browsers to work properly in proot environments on Android
 
-set -e
-
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -62,6 +60,8 @@ fix_desktop_file() {
     
     # Create temporary file
     local temp_file=$(mktemp)
+    # Ensure temp file is cleaned up on exit
+    trap 'rm -f "$temp_file"' RETURN
     
     # Process the file line by line
     while IFS= read -r line; do
@@ -141,9 +141,9 @@ main() {
     
     for file in "${desktop_files[@]}"; do
         if fix_desktop_file "$file"; then
-            ((success_count++)) || true
+            success_count=$((success_count + 1))
         else
-            ((fail_count++)) || true
+            fail_count=$((fail_count + 1))
         fi
         echo ""
     done
