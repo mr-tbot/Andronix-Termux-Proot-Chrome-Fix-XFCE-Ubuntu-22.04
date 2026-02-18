@@ -141,9 +141,9 @@ main() {
     
     for file in "${desktop_files[@]}"; do
         if fix_desktop_file "$file"; then
-            ((success_count++))
+            ((success_count++)) || true
         else
-            ((fail_count++))
+            ((fail_count++)) || true
         fi
         echo ""
     done
