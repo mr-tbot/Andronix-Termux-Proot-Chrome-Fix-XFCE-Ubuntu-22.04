@@ -34,7 +34,7 @@ backup_file() {
 # Function to fix a desktop file
 fix_desktop_file() {
     local desktop_file="$1"
-    local modified=0
+    local modified=0  # 0 = no changes, 1 = file was modified
     
     # Check if file exists and is readable
     if [ ! -f "$desktop_file" ]; then
@@ -60,6 +60,10 @@ fix_desktop_file() {
     
     # Create temporary file
     local temp_file=$(mktemp)
+    if [ -z "$temp_file" ] || [ ! -f "$temp_file" ]; then
+        print_error "Failed to create temporary file"
+        return 1
+    fi
     # Ensure temp file is cleaned up on exit
     trap 'rm -f "$temp_file"' RETURN
     
